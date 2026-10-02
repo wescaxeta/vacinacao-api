@@ -14,10 +14,14 @@ Faz parte de um pequeno ecossistema de sistemas de defesa agropecuária que mont
 diferentes, baseado na minha experiência com sistemas usados em 9 estados. Todo o código e todos
 os dados são fictícios.
 
+O [gta-integration-service](https://github.com/wescaxeta/gta-integration-service) (PHP) **consome esta
+API antes de emitir cada GTA**: se o rebanho não está apto, a guia é recusada com o motivo vindo daqui.
+O Docker Compose daquele projeto sobe esta API direto deste repositório.
+
 ```mermaid
 flowchart LR
     GTA["gta-integration-service<br/>(PHP · Mezzio)<br/>emite a GTA"] -->|SOAP| CAD["Cadastro agropecuário<br/>(WebService simulado)"]
-    GTA -.->|REST: rebanho apto?| VAC["<b>vacinacao-api</b><br/>(.NET 10)"]
+    GTA -->|REST: rebanho apto?| VAC["<b>vacinacao-api</b><br/>(.NET 10)"]
     VAC --> DB[(PostgreSQL)]
 ```
 
@@ -113,7 +117,7 @@ Sem Docker, aponte para um PostgreSQL existente com `TEST_CONNECTION_STRING`.
 
 ## Roadmap
 
-- [ ] `gta-integration-service` consultar esta API antes de emitir a GTA
+- [x] `gta-integration-service` consultar esta API antes de emitir a GTA
 - [ ] Autenticação JWT por perfil (veterinário registra, fiscal consulta)
 - [ ] Cobertura vacinal mínima (% do rebanho), cruzando com o saldo do cadastro agropecuário
 - [ ] Outbox para publicar o evento "vacinação registrada"
