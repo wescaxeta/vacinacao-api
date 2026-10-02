@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    name: Build, estilo e testes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Estilo de código (dotnet format)
+        run: dotnet format --verify-no-changes --no-restore
+
+      - name: Build (warnings como erro)
+        run: dotnet build --no-restore -c Release
+
+      # Os testes de integração sobem um PostgreSQL real com Testcontainers
+      - name: Testes (unitários e integração)
+        run: dotnet test --no-build -c Release --logger "trx;LogFilePrefix=resultado" --results-directory resultados
+
+      - name: Publica resultados dos testes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resultados-testes
+          path: resultados/
+
+  e2e:
+    name: Ponta a ponta (Docker Compose)
+    runs-on: ubuntu-latest
+    needs: build-test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sobe API e PostgreSQL
+        run: |
+          docker compose up -d --build --wait
+          for i in $(seq 1 60); do curl -sf http://localhost:8090/health && break; sleep 1; done
+
+      - name: Smoke test
+        run: sh tests/smoke.sh http://localhost:8090
+
+      - name: Logs em caso de falha
+        if: failure()
+        run: docker compose logs

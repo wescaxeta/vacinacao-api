@@ -1,0 +1,57 @@
+### Requisições de exemplo (VS Code REST Client, Rider ou Visual Studio)
+@base = http://localhost:8090
+
+### Aptidão: vacinou tudo (apta)
+GET {{base}}/propriedades/GO000001/aptidao?especie=bovino
+
+### Aptidão: brucelose vencida (bloqueada)
+GET {{base}}/propriedades/GO000003/aptidao?especie=bovino
+
+### Aptidão: raiva ainda no prazo (apta, com aviso)
+GET {{base}}/propriedades/MT000010/aptidao?especie=bovino
+
+### Campanhas de bovinos
+GET {{base}}/campanhas?especie=bovino
+
+### Criar campanha
+POST {{base}}/campanhas
+Content-Type: application/json
+
+{
+  "nome": "Brucelose - próxima etapa",
+  "doenca": "brucelose",
+  "especie": "bovino",
+  "inicio": "2026-11-01",
+  "fim": "2027-01-31",
+  "validadeMeses": 12,
+  "obrigatoria": true
+}
+
+### Registrar vacinação (troque pelo id de uma campanha em andamento)
+POST {{base}}/campanhas/COLE-O-ID-AQUI/vacinacoes
+Content-Type: application/json
+
+{
+  "codigoPropriedade": "GO000003",
+  "quantidadeAnimais": 80,
+  "dataAplicacao": "2026-10-02",
+  "loteVacina": "RV-2026-100",
+  "crmvVeterinario": "GO-12345"
+}
+
+### Erros de validação por campo (400)
+POST {{base}}/campanhas
+Content-Type: application/json
+
+{
+  "nome": "",
+  "doenca": "raiva",
+  "especie": "bovino",
+  "inicio": "2026-05-01",
+  "fim": "2026-04-01",
+  "validadeMeses": 0,
+  "obrigatoria": true
+}
+
+### Histórico de vacinações
+GET {{base}}/propriedades/GO000001/vacinacoes

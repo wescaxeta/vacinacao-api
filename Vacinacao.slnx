@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Vacinacao.Api/Vacinacao.Api.csproj" />
+    <Project Path="src/Vacinacao.Application/Vacinacao.Application.csproj" />
+    <Project Path="src/Vacinacao.Domain/Vacinacao.Domain.csproj" />
+    <Project Path="src/Vacinacao.Infrastructure/Vacinacao.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Vacinacao.IntegrationTests/Vacinacao.IntegrationTests.csproj" />
+    <Project Path="tests/Vacinacao.UnitTests/Vacinacao.UnitTests.csproj" />
+  </Folder>
+</Solution>

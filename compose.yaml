@@ -1,0 +1,25 @@
+# API em http://localhost:8090 (documentação interativa em /scalar/v1).
+# Porta 8090 para não conflitar com o gta-integration-service (8080), caso rodem juntos.
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: vacinacao
+      POSTGRES_USER: vacinacao
+      POSTGRES_PASSWORD: vacinacao
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vacinacao -d vacinacao"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build: .
+    ports:
+      - "8090:8080"
+    environment:
+      ConnectionStrings__Vacinacao: Host=db;Port=5432;Database=vacinacao;Username=vacinacao;Password=vacinacao
+      Banco__DadosDemonstracao: "true"
+    depends_on:
+      db:
+        condition: service_healthy

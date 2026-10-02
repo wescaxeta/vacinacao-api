@@ -1,0 +1,47 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{json,yml,yaml,xml,csproj,props,slnx}]
+indent_size = 2
+
+[*.cs]
+csharp_style_namespace_declarations = file_scoped:warning
+csharp_prefer_braces = true:warning
+csharp_style_var_for_built_in_types = true:suggestion
+dotnet_style_qualification_for_field = false:warning
+dotnet_sort_system_directives_first = true
+
+# Campos privados com prefixo "_"
+dotnet_naming_rule.campos_privados.symbols = campos_privados
+dotnet_naming_rule.campos_privados.style = prefixo_underscore
+dotnet_naming_rule.campos_privados.severity = warning
+dotnet_naming_symbols.campos_privados.applicable_kinds = field
+dotnet_naming_symbols.campos_privados.applicable_accessibilities = private
+dotnet_naming_symbols.campos_privados.required_modifiers =
+dotnet_naming_style.prefixo_underscore.capitalization = camel_case
+dotnet_naming_style.prefixo_underscore.required_prefix = _
+
+# Constantes em PascalCase
+dotnet_naming_rule.constantes.symbols = constantes
+dotnet_naming_rule.constantes.style = pascal
+dotnet_naming_rule.constantes.severity = warning
+dotnet_naming_symbols.constantes.applicable_kinds = field
+dotnet_naming_symbols.constantes.required_modifiers = const
+
+# Campos estáticos somente leitura (convenção do .NET: PascalCase)
+dotnet_naming_rule.estaticos_readonly.symbols = estaticos_readonly
+dotnet_naming_rule.estaticos_readonly.style = pascal
+dotnet_naming_rule.estaticos_readonly.severity = warning
+dotnet_naming_symbols.estaticos_readonly.applicable_kinds = field
+dotnet_naming_symbols.estaticos_readonly.required_modifiers = static, readonly
+dotnet_naming_style.pascal.capitalization = pascal_case
+
+[**/Migrations/*.cs]
+generated_code = true
